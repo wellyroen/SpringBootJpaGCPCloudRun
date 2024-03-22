@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.skywhalelab.SpringBootJpa.dao.BoardRepository;
+import com.skywhalelab.SpringBootJpa.dto.Board;
 
 @SpringBootApplication
 //@SpringBootApplication(scanBasePackages = "com.skywhalelab.SpringBootJpa.controller")
@@ -29,30 +30,29 @@ public class SpringBootJpaApplication extends SpringBootServletInitializer {
 		SpringApplication.run(SpringBootJpaApplication.class, args);
 	}
 
-//    @Bean
-//    CommandLineRunner demo(BoardRepository repository) {
-//		return (args) -> {
-//			
-//			/*
-//			for(int i = 0; i < 300; i++) {
-//				Board board = new Board();
-//				board.setTitle("test title " + i);
-//				board.setContent("test content " + i);
-//				
-//				System.out.println(board.toString());
-//				
-//				repository.save(board);
-//			}
-//			*/
-//			
-//            Pageable pageable = PageRequest.of(2, 5, Sort.by("seq").descending());
-//            repository.findAll(pageable).forEach(bbs -> {
+    @Bean
+    CommandLineRunner demo(BoardRepository repository) {
+		return (args) -> {
+			
+			for(int i = 0; i < 75; i++) {
+				Board board = new Board();
+				board.setTitle("test title " + i);
+				board.setContent("test content " + i);
+				board.setUsrId("test user " + i);
+				
+				System.out.println(board.toString());
+				
+				repository.save(board);
+			}
+			
+            Pageable pageable = PageRequest.of(2, 5, Sort.by("seq").descending());
+            repository.findAll(pageable).forEach(bbs -> {
+				log.info(bbs.toString());
+			});
+			
+//			repository.findByTitle("test").forEach(bbs -> {
 //				log.info(bbs.toString());
 //			});
-//			
-////			repository.findByTitle("test").forEach(bbs -> {
-////				log.info(bbs.toString());
-////			});
-//		};
-//	}
+		};
+	}
 }
