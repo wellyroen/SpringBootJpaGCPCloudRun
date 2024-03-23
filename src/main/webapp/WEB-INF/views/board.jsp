@@ -45,8 +45,6 @@
 			
 			if(ctl.id != null && ctl.id != '') {
 				
-				debugger;
-				
 				var nNaviSize = Number($('#naviSize').val());
 				var nNaviStIdx = Number($('#naviStIdx').val());
 				
@@ -82,9 +80,23 @@
 		var date = new Date();
 		console.log(date);
 		
+		var inputItemPerPage = $('#inputItemPerPage').val();
+		
+		$('#itemPerPage').val(inputItemPerPage);
+		
+		$('#itemPerPage').change(function() {
+			$('#frmSearch').submit();
+		});
+		
+		
+	$('#searchText').keypress(function(e) {
+			if (e.keyCode == 13) {
+				$('#frmSearch').submit();
+			}
+		});
 	});
-	/* ready end */
 	
+	/* ready end */
 </script>
 
 <title>BOARD</title>
@@ -133,7 +145,7 @@
 								<div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
 
 									<input type="hidden" id="itemTotCnt" name="itemTotCnt" value="${page.itemTotCnt}"/>
-									<input type="hidden" id="itemPerPage" name="itemPerPage" value="${page.itemPerPage}"/>
+									<input type="hidden" id="inputItemPerPage" name="inputItemPerPage" value="${page.itemPerPage}"/>
 									
 									<input type="hidden" id="naviSize" name="naviSize" value="${page.naviSize}"/>
 									<input type="hidden" id="naviStIdx" name="naviStIdx" value="${page.naviStIdx}"/>
@@ -150,7 +162,7 @@
 											<div class="col-sm-12 col-md-6 px-0">
 												<div class="dataTables_length" id="dataTable_length">
 													<label>Show</label>
-													<select id="dataTable_length" name="dataTable_length" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm">
+													<select id="itemPerPage" name="itemPerPage" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm">
 														<option value="10">10</option>
 														<option value="25">25</option>
 														<option value="50">50</option>
@@ -161,9 +173,9 @@
 											</div>
 											<div class="col-sm-12 col-md-6 px-0">
 												<div id="dataTable_filter" class="dataTables_filter">
-													<label>Search:<input type="search"
-														class="form-control form-control-sm" placeholder=""
-														aria-controls="dataTable"></label>
+													<label>Search:
+														<input id="searchText" name="searchText" value="${page.searchText}" type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable">
+													</label>
 												</div>
 											</div>
 											
@@ -211,14 +223,14 @@
 												id="dataTable_paginate">
 												<ul class="pagination justify-content-end">
 													<c:choose>
-														<c:when test="${page.naviIdx eq '1'}">
+														<c:when test="${page.naviStIdx eq '1'}">
 															<li class="paginate_button page-item previous disabled" id="dataTable_previous">
-																<a href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Prev</a>
+																<a id="naviPrev" href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Prev</a>
 															</li>
 														</c:when>
 														<c:otherwise>
 															<li class="paginate_button page-item previous" id="dataTable_previous">
-																<a href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Prev</a>
+																<a id="naviPrev" href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Prev</a>
 															</li>
 														</c:otherwise>
 													</c:choose>
@@ -252,16 +264,15 @@
 														</c:choose>
 													</c:forEach>
 													
-
 													<c:choose>
-														<c:when test="${page.naviLstIdx eq page.naviLstIdx}">
+														<c:when test="${page.naviEdIdx eq page.naviLstIdx}">
 															<li class="paginate_button page-item next disabled" id="dataTable_next">
-																<a href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a>
+																<a id="naviNext" href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a>
 															</li>
 														</c:when>
 														<c:otherwise>
 															<li class="paginate_button page-item next" id="dataTable_next">
-																<a href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a>
+																<a id="naviNext" href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a>
 															</li>
 														</c:otherwise>
 													</c:choose>
