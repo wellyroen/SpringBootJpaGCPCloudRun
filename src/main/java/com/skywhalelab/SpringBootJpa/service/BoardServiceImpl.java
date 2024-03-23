@@ -1,13 +1,17 @@
 package com.skywhalelab.SpringBootJpa.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.skywhalelab.SpringBootJpa.dao.BoardRepository;
-import com.skywhalelab.SpringBootJpa.dto.Page;
+import com.skywhalelab.SpringBootJpa.dto.Board;
+import com.skywhalelab.SpringBootJpa.dto.BoardPage;
 
 
 @Service
@@ -17,7 +21,7 @@ public class BoardServiceImpl implements BoardService{
 	BoardRepository repository;
 
 	@Override
-	public Page findAll(Page page) {
+	public BoardPage findAll(BoardPage boardPage) {
 		
 		long itemTotCnt = 0;
 		int itemPerPage = 10;
@@ -30,7 +34,7 @@ public class BoardServiceImpl implements BoardService{
 		int naviStIdx = 1; 
 		int naviEdIdx = 5;
 		
-		String searchText = page.getSearchText();
+		String searchText = boardPage.getSearchText();
 		
 		if (searchText != null && !searchText.isEmpty()) {
 			itemTotCnt = repository.countByTitleContaining(searchText);
@@ -38,25 +42,27 @@ public class BoardServiceImpl implements BoardService{
 			itemTotCnt = repository.count();	
 		}
 		
+		boardPage.setItemTotCnt(itemTotCnt);
+		
 		if (itemTotCnt == 0) {
-			page.setNaviStIdx(1);
-			page.setNaviEdIdx(1);
-			page.setNaviIdx(1);
-			page.setNaviLstIdx(1);
-			return page;
+			boardPage.setNaviStIdx(1);
+			boardPage.setNaviEdIdx(1);
+			boardPage.setNaviIdx(1);
+			boardPage.setNaviLstIdx(1);
+			return boardPage;
 		}
 		
-		itemPerPage = page.getItemPerPage();
+		itemPerPage = boardPage.getItemPerPage();
 		
-		naviIdx = page.getNaviIdx();
-		naviLstIdx = page.getNaviLstIdx();
+		naviIdx = boardPage.getNaviIdx();
+		naviLstIdx = boardPage.getNaviLstIdx();
 		
-		naviSize = page.getNaviSize();
-		naviStIdx = page.getNaviStIdx();
-		naviEdIdx = page.getNaviEdIdx();
+		naviSize = boardPage.getNaviSize();
+		naviStIdx = boardPage.getNaviStIdx();
+		naviEdIdx = boardPage.getNaviEdIdx();
 		
-//		long itemStIdx = 0; 
-//		long itemEdIdx = 0;
+		long itemStIdx = 0; 
+		long itemEdIdx = 0;
 		
 		if(itemTotCnt <= itemPerPage) {
 			naviIdx = 1;
@@ -64,8 +70,8 @@ public class BoardServiceImpl implements BoardService{
 			naviEdIdx = 1;
 			naviLstIdx = 1;
 			
-//			itemStIdx = 1;
-//			itemEdIdx = itemTotCnt;
+			itemStIdx = 1;
+			itemEdIdx = itemTotCnt;
 		} else {
 			if(itemTotCnt % itemPerPage == 0) {
 				naviLstIdx = (int)(itemTotCnt / itemPerPage);
@@ -73,8 +79,12 @@ public class BoardServiceImpl implements BoardService{
 				naviLstIdx = (int)(itemTotCnt / itemPerPage) + 1;
 			}
 			
-//			itemStIdx = itemTotCnt - (naviIdx * itemPerPage) + 1;
-//			itemEdIdx = itemTotCnt - ((naviIdx - 1) * itemPerPage);
+			itemStIdx = itemTotCnt - (naviIdx * itemPerPage) + 1;
+			itemEdIdx = itemTotCnt - ((naviIdx - 1) * itemPerPage);
+			
+			if (itemStIdx < 1) {
+				itemStIdx = 1;
+			}
 			
 			if(naviIdx < naviStIdx) {
 				System.out.println("naviIdx too small");
@@ -101,32 +111,59 @@ public class BoardServiceImpl implements BoardService{
 			}
 		}
 		
-		page.setNaviIdx(naviIdx);
-		page.setNaviLstIdx(naviLstIdx);
-		page.setNaviStIdx(naviStIdx);
-		page.setNaviEdIdx(naviEdIdx);
+		boardPage.setNaviIdx(naviIdx);
+		boardPage.setNaviLstIdx(naviLstIdx);
+		boardPage.setNaviStIdx(naviStIdx);
+		boardPage.setNaviEdIdx(naviEdIdx);
 		
-//		page.setItemTotCnt(itemTotCnt);
-//		page.setItemStIdx(itemStIdx);
-//		page.setItemEdIdx(itemEdIdx);
+		boardPage.setItemTotCnt(itemTotCnt);
+		boardPage.setItemStIdx(itemStIdx);
+		boardPage.setItemEdIdx(itemEdIdx);
 		
-		Pageable pageable = PageRequest.of(page.getNaviIdx() - 1, page.getItemPerPage(), Sort.by("seq").descending());
+		Pageable pageable = PageRequest.of(boardPage.getNaviIdx() - 1, boardPage.getItemPerPage(), Sort.by("seq").descending());
 		
-		pageable = PageRequest.of(page.getNaviIdx() - 1, page.getItemPerPage(), Sort.by("seq").descending());
+		pageable = PageRequest.of(boardPage.getNaviIdx() - 1, boardPage.getItemPerPage(), Sort.by("seq").descending());
+		
+		long rownum = itemEdIdx;
 		
 		if (searchText != null && !searchText.isEmpty()) {
+			/*
 			repository.findByTitleContaining(searchText, pageable).forEach(board -> {
-				page.getList().add(board);
+				boardPage.getList().add(board);
 			});
+			*/
+			List<Board> list = repository.findByTitleContaining(searchText, pageable);
+			
+			for (int i = 0; i < list.size(); i++) {
+				Board board = list.get(i);
+				board.setRownum(rownum--);
+				boardPage.getList().add(board);
+			}
 		} else {
+			
+			/*
 			repository.findAll(pageable).forEach(board -> {
-				page.getList().add(board);
-			});	
+				
+				System.out.println(board);
+				
+				//board.setRownum(rownum--);
+				
+				boardPage.getList().add(board);
+			});
+			*/
+			
+			Page<Board> result = repository.findAll(pageable);
+			
+			List<Board> list = result.getContent();
+			
+			for (int i = 0; i < list.size(); i++) {
+				Board board = list.get(i);
+				board.setRownum(rownum--);
+				boardPage.getList().add(board);
+			}
 		}	
 		
-		
-		
-		return page;
+		return boardPage;
 	}
 
 }

@@ -30,7 +30,7 @@
 
 <script type="text/javascript">
 
-	var page = "${page}";
+	var boardPage = "${boardPage}";
 
 	function movePage(ctl) {
 		
@@ -144,20 +144,23 @@
 							<div class="table-responsive">
 								<div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
 
-									<input type="hidden" id="itemTotCnt" name="itemTotCnt" value="${page.itemTotCnt}"/>
-									<input type="hidden" id="inputItemPerPage" name="inputItemPerPage" value="${page.itemPerPage}"/>
+									<input type="hidden" id="itemTotCnt" name="itemTotCnt" value="${boardPage.itemTotCnt}"/>
+									<input type="hidden" id="inputItemPerPage" name="inputItemPerPage" value="${boardPage.itemPerPage}"/>
 									
-									<input type="hidden" id="naviSize" name="naviSize" value="${page.naviSize}"/>
-									<input type="hidden" id="naviStIdx" name="naviStIdx" value="${page.naviStIdx}"/>
-									<input type="hidden" id="naviEdIdx" name="naviEdIdx" value="${page.naviEdIdx}"/>
+									<input type="hidden" id="naviSize" name="naviSize" value="${boardPage.naviSize}"/>
+									<input type="hidden" id="naviStIdx" name="naviStIdx" value="${boardPage.naviStIdx}"/>
+									<input type="hidden" id="naviEdIdx" name="naviEdIdx" value="${boardPage.naviEdIdx}"/>
 									
-									<input type="hidden" id="naviLstIdx" name="naviLstIdx" value="${page.naviLstIdx}"/>
+									<input type="hidden" id="naviLstIdx" name="naviLstIdx" value="${boardPage.naviLstIdx}"/>
+									
+									<input type="hidden" id="itemStIdx" name="itemStIdx" value="${boardPage.itemStIdx}"/>
+									<input type="hidden" id="itemEdIdx" name="itemEdIdx" value="${boardPage.itemEdIdx}"/>
 									
 									<form class="col-sm-12 px-0" id="frmSearch" name="frmSearch" method="get" action="board">
 									
 										<div class="row mx-0">
 											
-											<input type="hidden" id="naviIdx" name="naviIdx" value="${page.naviIdx}"/>
+											<input type="hidden" id="naviIdx" name="naviIdx" value="${boardPage.naviIdx}"/>
 											
 											<div class="col-sm-12 col-md-6 px-0">
 												<div class="dataTables_length" id="dataTable_length">
@@ -174,7 +177,7 @@
 											<div class="col-sm-12 col-md-6 px-0">
 												<div id="dataTable_filter" class="dataTables_filter">
 													<label>Search:
-														<input id="searchText" name="searchText" value="${page.searchText}" type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable">
+														<input id="searchText" name="searchText" value="${boardPage.searchText}" type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable">
 													</label>
 												</div>
 											</div>
@@ -190,6 +193,7 @@
 												width="100%" cellspacing="0">
 												<thead>
 													<tr>
+														<th>idx</th>
 														<th>seq</th>
 														<th>title</th>
 														<th>usrId</th>
@@ -198,8 +202,9 @@
 												</thead>
 												<tbody>
 												
-													<c:forEach var="item" items="${page.list}" varStatus="status">
+													<c:forEach var="item" items="${boardPage.list}" varStatus="status">
 														<tr>
+														    <td>${item.rownum}</td>
 															<td>${item.seq}</td>
 															<td>${item.title}</td>
 															<td>${item.usrId}</td>
@@ -214,16 +219,14 @@
 									<!-- navi -->
 									<div class="row">
 										<div class="col-sm-12 col-md-5">
-											<div class="dataTables_info" id="dataTable_info"
-												role="status" aria-live="polite">Showing 1 to 10 of 57
-												entries</div>
+											<div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing ${boardPage.itemStIdx} to ${boardPage.itemEdIdx} of ${boardPage.itemTotCnt} entries</div>
 										</div>
 										<div class="col-sm-12 col-md-7">
 											<div class="dataTables_paginate paging_simple_numbers"
 												id="dataTable_paginate">
 												<ul class="pagination justify-content-end">
 													<c:choose>
-														<c:when test="${page.naviStIdx eq '1'}">
+														<c:when test="${boardPage.naviStIdx eq '1'}">
 															<li class="paginate_button page-item previous disabled" id="dataTable_previous">
 																<a id="naviPrev" href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Prev</a>
 															</li>
@@ -249,9 +252,9 @@
 													</li>
 													--%>
 													
-													<c:forEach var="i" begin="${page.naviStIdx}" end="${page.naviEdIdx}">
+													<c:forEach var="i" begin="${boardPage.naviStIdx}" end="${boardPage.naviEdIdx}">
 														<c:choose>
-															<c:when test="${i eq page.naviIdx}">
+															<c:when test="${i eq boardPage.naviIdx}">
 																<li class="paginate_button page-item active">
 																	<a href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">${i}</a>
 																</li>
@@ -265,7 +268,7 @@
 													</c:forEach>
 													
 													<c:choose>
-														<c:when test="${page.naviEdIdx eq page.naviLstIdx}">
+														<c:when test="${boardPage.naviEdIdx eq boardPage.naviLstIdx}">
 															<li class="paginate_button page-item next disabled" id="dataTable_next">
 																<a id="naviNext" href="javascript:void(0)" onclick="movePage(this)" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a>
 															</li>

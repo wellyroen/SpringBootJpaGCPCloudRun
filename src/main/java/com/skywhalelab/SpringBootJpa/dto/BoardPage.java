@@ -13,11 +13,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Page {
+public class BoardPage {
 	
 	private String searchText;
 	
-	private int itemTotCnt;
+	private long itemTotCnt;
 	
 	@Builder.Default
 	private int itemPerPage = 10;
@@ -36,6 +36,9 @@ public class Page {
 	
 	@Builder.Default
 	private int naviLstIdx = Integer.MAX_VALUE;
+	
+	private long itemStIdx;
+	private long itemEdIdx;
 	
 	@Builder.Default
 	private List<Board> list = new java.util.ArrayList<Board>();

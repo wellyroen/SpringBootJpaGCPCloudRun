@@ -1,8 +1,8 @@
 package com.skywhalelab.SpringBootJpa.service;
 
-import com.skywhalelab.SpringBootJpa.dto.Page;
+import com.skywhalelab.SpringBootJpa.dto.BoardPage;
 
 public interface BoardService {
 
-	public Page findAll(Page param);
+	public BoardPage findAll(BoardPage param);
 }

@@ -13,7 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +35,9 @@ public class Board {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Id
 	private Long seq;
+	
+	@Transient
+	private Long rownum;
 
 	@Column(length = 8)
 	@ColumnDefault("'NONE'")
