@@ -6,6 +6,6 @@ ARG JAR_FILE_PATH=target/*.war
 
 COPY ${JAR_FILE} springbootjpaclone.war
 
-EXPOSE 8280
+EXPOSE 8080
 
 ENTRYPOINT ["java","-jar","/springbootjpaclone.jar"]
