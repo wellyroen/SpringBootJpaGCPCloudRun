@@ -2,9 +2,9 @@ FROM openjdk:17-jdk-alpine
 
 CMD ["./mvnw", "clean", "package"]
 
-ARG WAR_FILE=target/*.war
+ARG JAR_FILE_PATH=target/*.war
 
-COPY ${WAR_FILE} springbootjpaclone.war
+COPY ${JAR_FILE_PATH} springbootjpaclone.war
 
 EXPOSE 8080
 
