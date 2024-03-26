@@ -7,7 +7,7 @@ CMD ["./mvnw", "clean", "package"]
 
 ARG JAR_FILE_PATH=target/*.war
 
-CMD ["ls ./target/*"]
+CMD ["ls", "./target/*"]
 
 COPY ${JAR_FILE_PATH} springbootjpaclone.war
 
