@@ -3,6 +3,6 @@ VOLUME /tmp
 ENV SPRING_PROFILES_ACTIVE docker
 CMD ["./mvnw", "clean", "package"]
 ARG JAR_FILE=target/*.war
-COPY ./target/*.war app.war
+COPY mvnw app.war
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app.war"]
