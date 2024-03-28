@@ -1,17 +1,11 @@
 FROM openjdk:17-jdk-alpine
 
-CMD ["pwd"]
-CMD ["ls"]
-
 CMD ["./mvnw", "clean", "package"]
 
-ARG JAR_FILE_PATH=target/*.war
+ARG JAR_FILE_PATH=./target/*.war
 
-CMD ["ls", "./target/*"]
+COPY ${JAR_FILE_PATH} app.war
 
-COPY ${JAR_FILE_PATH} springbootjpaclone.war
-
-ENV PORT=${PORT:-8080}
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","/springbootjpaclone.jar"]
+ENTRYPOINT ["java","-jar","/app.war"]
