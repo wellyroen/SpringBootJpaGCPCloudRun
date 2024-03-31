@@ -18,8 +18,7 @@ RUN ls -alt /target/*
 RUN ls -alt /target/SpringBootJpa-0.0.1-SNAPSHOT.war.original
 RUN ls -alt /target/SpringBootJpa-0.0.1-SNAPSHOT.war
 
-ARG WAR_PATH /target/SpringBootJpa-0.0.1-SNAPSHOT.war
-RUN cp ${WAR_PATH} /app.war
+RUN cp /target/SpringBootJpa-0.0.1-SNAPSHOT.war /app.war
 
 EXPOSE 8080
 
