@@ -3,6 +3,7 @@ FROM openjdk:17-jdk-alpine
 COPY mvnw .
 COPY .mvn ./.mvn
 COPY LICENSE .
+COPY README.md .
 COPY pom.xml .
 COPY src src
 RUN /bin/sh mvnw clean package
